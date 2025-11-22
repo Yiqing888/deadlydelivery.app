@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
 
 import {
   CalculatorInput,
@@ -235,20 +236,74 @@ export default function ProfitCalculator() {
               <label className="mb-2 block text-sm font-bold text-gray-400 uppercase tracking-wider">
                 Player class
               </label>
-              <select
+              <Listbox
                 value={form.playerClass}
-                onChange={(event) =>
+                onChange={(value) =>
                   setForm((prev) => ({
                     ...prev,
-                    playerClass: event.target.value as PlayerClass,
+                    playerClass: value,
                   }))
                 }
-                className="w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm focus:shadow-[0_0_10px_var(--color-theme-hazard)] transition-shadow"
               >
-                {classes.map((name) => (
-                  <option key={name}>{name}</option>
-                ))}
-              </select>
+                <div className="relative mt-1">
+                  <ListboxButton className="relative w-full cursor-pointer rounded-sm border border-theme-surface bg-theme-dark py-2 pl-3 pr-10 text-left text-gray-200 focus:outline-none focus:border-theme-hazard focus:shadow-[0_0_10px_var(--color-theme-hazard)] transition-shadow sm:text-sm">
+                    <span className="block truncate">{form.playerClass}</span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                      <svg
+                        className="h-5 w-5 text-gray-400"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </ListboxButton>
+                  <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-sm border border-theme-surface bg-theme-dark py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {classes.map((name) => (
+                      <ListboxOption
+                        key={name}
+                        value={name}
+                        className={({ focus }) =>
+                          `relative cursor-pointer select-none py-2 pl-10 pr-4 ${focus ? "bg-theme-hazard/20 text-theme-hazard" : "text-gray-200"
+                          }`
+                        }
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate ${selected ? "font-medium" : "font-normal"
+                                }`}
+                            >
+                              {name}
+                            </span>
+                            {selected ? (
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-theme-hazard">
+                                <svg
+                                  className="h-5 w-5"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                  aria-hidden="true"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </ListboxOption>
+                    ))}
+                  </ListboxOptions>
+                </div>
+              </Listbox>
             </div>
 
             <div>
@@ -278,8 +333,8 @@ export default function ProfitCalculator() {
                   type="button"
                   onClick={() => setInventoryMode("quick")}
                   className={`rounded-sm border px-2 py-1 transition ${inventoryMode === "quick"
-                      ? "border-theme-hazard text-theme-hazard"
-                      : "border-theme-surface text-gray-600 hover:border-gray-600"
+                    ? "border-theme-hazard text-theme-hazard"
+                    : "border-theme-surface text-gray-600 hover:border-gray-600"
                     }`}
                 >
                   Quick entry
@@ -288,8 +343,8 @@ export default function ProfitCalculator() {
                   type="button"
                   onClick={() => setInventoryMode("detailed")}
                   className={`rounded-sm border px-2 py-1 transition ${inventoryMode === "detailed"
-                      ? "border-theme-hazard text-theme-hazard"
-                      : "border-theme-surface text-gray-600 hover:border-gray-600"
+                    ? "border-theme-hazard text-theme-hazard"
+                    : "border-theme-surface text-gray-600 hover:border-gray-600"
                     }`}
                 >
                   Detailed inventory

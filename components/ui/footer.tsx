@@ -56,7 +56,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
             <h3 className="font-bold text-gray-200 uppercase tracking-wider">Data care</h3>
             <p className="text-gray-500">
               Numbers pulled from Bloxinformer, in-game Album, and squad spreadsheets. Spot a wrong value?
-              DM <span className="font-mono text-gray-300">@run-planner</span>.
+              Email <a href="mailto:contact@deadlydelivery.app" className="font-mono text-theme-blood hover:underline">contact@deadlydelivery.app</a>.
             </p>
             <p className="text-xs text-gray-600">
               &copy; {new Date().getFullYear()} Deadly Delivery Run Planner
