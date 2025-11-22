@@ -641,3 +641,4 @@ interface RunPlan {
 	•	risk 模型和物价表依赖人工维护，建议根据玩家反馈（例如“太保守/太激进”）定期调 `floorRiskBase` 和 `items` 数据。
 	•	若要支持多语言，请先梳理术语映射，避免页面中/英文夹杂失控。
 	•	上线前配置 ESLint/格式化，避免因构建或可访问性问题阻塞发布。
+	•	关键调参集中在 `lib/calculator.ts` 的 `RISK_CONFIG`，优先通过修改 base 风险曲线与 gain 斜率完成整体偏移。

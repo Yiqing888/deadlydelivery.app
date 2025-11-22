@@ -74,8 +74,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${courier.variable} ${creepster.variable} bg-theme-dark font-courier tracking-tight text-gray-200 antialiased`}
+        className={`${courier.variable} ${creepster.variable} bg-theme-dark font-courier tracking-tight text-gray-200 antialiased cursor-retro`}
       >
+        <div className="pointer-events-none fixed inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] animate-crt-flicker"></div>
         <div className="flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
           {children}
         </div>

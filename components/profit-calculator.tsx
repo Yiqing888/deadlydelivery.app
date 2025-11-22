@@ -22,9 +22,9 @@ const classes: PlayerClass[] = [
 ];
 
 const preferences: { label: string; value: RiskPreference }[] = [
-  { label: "Conservative 保守", value: "SAFE" },
-  { label: "Balanced 中性", value: "NORMAL" },
-  { label: "Greedy 冒险", value: "RISKY" },
+  { label: "Conservative", value: "SAFE" },
+  { label: "Balanced", value: "NORMAL" },
+  { label: "Greedy", value: "RISKY" },
 ];
 
 const timeOptions: { label: string; value: TimeLeftTier }[] = [
@@ -83,6 +83,15 @@ export default function ProfitCalculator() {
     }, 0);
   }, [detailCounts]);
 
+  const dropSuggestions = useMemo(() => {
+    const picked = detailCatalog.filter((item) => (detailCounts[item.id] ?? 0) > 0);
+    const sorted = picked.sort((a, b) => a.density - b.density);
+    return sorted.slice(0, 3).map((item) => ({
+      ...item,
+      count: detailCounts[item.id] ?? 0,
+    }));
+  }, [detailCounts]);
+
   useEffect(() => {
     if (inventoryMode === "detailed") {
       setForm((prev) => ({
@@ -124,8 +133,8 @@ export default function ProfitCalculator() {
           Deadly Delivery Profit & Risk Calculator
         </h1>
         <p className="text-base text-gray-400 font-courier max-w-2xl mx-auto">
-          Plug in your current floor, backpack haul, and squad health. We crunch a quick EV (期望收益)
-          check and tell you if it&apos;s smarter to evacuate or go deeper.
+          Plug in your current floor, backpack haul, and squad health. We crunch a quick EV (expected
+          value) check and tell you if it&apos;s smarter to evacuate or go deeper.
         </p>
       </header>
 
@@ -143,7 +152,7 @@ export default function ProfitCalculator() {
           <div className="mb-6 space-y-6">
             <div>
               <label className="mb-2 block text-sm font-bold text-gray-400 uppercase tracking-wider">
-                Current floor / 当前楼层
+                Current floor
               </label>
               <div className="flex items-center gap-4">
                 <input
@@ -160,7 +169,7 @@ export default function ProfitCalculator() {
                       targetFloor: Math.min(20, value + 1),
                     }));
                   }}
-                  className="w-full accent-theme-hazard h-2 bg-theme-dark rounded-lg appearance-none cursor-pointer"
+                  className="w-full accent-theme-hazard h-2 bg-theme-dark rounded-lg appearance-none cursor-pointer focus:shadow-[0_0_10px_var(--color-theme-hazard)] transition-shadow"
                 />
                 <span className="w-12 text-center text-2xl font-creepster text-theme-hazard">
                   {form.currentFloor}
@@ -183,7 +192,7 @@ export default function ProfitCalculator() {
                           : Math.min(20, Math.max(prev.currentFloor + 1, value)),
                       }));
                     }}
-                    className="mt-2 w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm"
+                    className="mt-2 w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm focus:shadow-[0_0_10px_var(--color-theme-hazard)] transition-shadow"
                   />
                 </label>
                 <p className="border border-dashed border-gray-700 p-3 text-xs text-gray-500 font-mono">
@@ -195,7 +204,7 @@ export default function ProfitCalculator() {
 
             <div>
               <label className="mb-2 block text-sm font-bold text-gray-400 uppercase tracking-wider">
-                Squad alive / 存活人数
+                Squad alive
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {[1, 2, 3, 4].map((value) => {
@@ -211,8 +220,8 @@ export default function ProfitCalculator() {
                         }))
                       }
                       className={`border-2 px-3 py-2 text-sm font-bold transition uppercase ${active
-                          ? "border-theme-hazard bg-theme-hazard/20 text-theme-hazard"
-                          : "border-theme-surface bg-theme-dark text-gray-600 hover:border-gray-600"
+                        ? "border-theme-hazard bg-theme-hazard/20 text-theme-hazard"
+                        : "border-theme-surface bg-theme-dark text-gray-600 hover:border-gray-600"
                         }`}
                     >
                       {value}
@@ -224,7 +233,7 @@ export default function ProfitCalculator() {
 
             <div>
               <label className="mb-2 block text-sm font-bold text-gray-400 uppercase tracking-wider">
-                Player class / 职业
+                Player class
               </label>
               <select
                 value={form.playerClass}
@@ -234,7 +243,7 @@ export default function ProfitCalculator() {
                     playerClass: event.target.value as PlayerClass,
                   }))
                 }
-                className="w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm"
+                className="w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm focus:shadow-[0_0_10px_var(--color-theme-hazard)] transition-shadow"
               >
                 {classes.map((name) => (
                   <option key={name}>{name}</option>
@@ -244,7 +253,7 @@ export default function ProfitCalculator() {
 
             <div>
               <label className="mb-2 block text-sm font-bold text-gray-400 uppercase tracking-wider">
-                Backpack value / 背包总价值 (credits)
+                Backpack value (credits)
               </label>
               <input
                 type="number"
@@ -261,29 +270,27 @@ export default function ProfitCalculator() {
                   }));
                 }}
                 placeholder="Estimate from Album"
-                className="w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm placeholder-gray-700 disabled:cursor-not-allowed disabled:text-gray-500"
+                className="w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm placeholder-gray-700 disabled:cursor-not-allowed disabled:text-gray-500 focus:shadow-[0_0_10px_var(--color-theme-hazard)] transition-shadow"
               />
               <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-mono text-gray-500">
                 <span>Mode:</span>
                 <button
                   type="button"
                   onClick={() => setInventoryMode("quick")}
-                  className={`rounded-sm border px-2 py-1 transition ${
-                    inventoryMode === "quick"
+                  className={`rounded-sm border px-2 py-1 transition ${inventoryMode === "quick"
                       ? "border-theme-hazard text-theme-hazard"
                       : "border-theme-surface text-gray-600 hover:border-gray-600"
-                  }`}
+                    }`}
                 >
                   Quick entry
                 </button>
                 <button
                   type="button"
                   onClick={() => setInventoryMode("detailed")}
-                  className={`rounded-sm border px-2 py-1 transition ${
-                    inventoryMode === "detailed"
+                  className={`rounded-sm border px-2 py-1 transition ${inventoryMode === "detailed"
                       ? "border-theme-hazard text-theme-hazard"
                       : "border-theme-surface text-gray-600 hover:border-gray-600"
-                  }`}
+                    }`}
                 >
                   Detailed inventory
                 </button>
@@ -361,6 +368,29 @@ export default function ProfitCalculator() {
                       </p>
                     )}
                   </div>
+
+                  {dropSuggestions.length > 0 && (
+                    <div className="border border-theme-surface bg-black/40 p-3 text-xs text-gray-400">
+                      <p className="font-bold uppercase tracking-wider text-gray-500 mb-2">
+                        Drop hints（低价值密度，先丢这些）
+                      </p>
+                      <ul className="space-y-1">
+                        {dropSuggestions.map((item) => (
+                          <li key={item.id} className="flex items-center justify-between">
+                            <span className="text-gray-200">
+                              {item.name} × {item.count}
+                            </span>
+                            <span className="font-mono text-gray-500">
+                              {Math.round(item.density)} /slot
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-2 text-[11px] text-gray-500">
+                        建议把这些低密度物品换成高密度战利品或实用道具（冷却剂/眩晕类）。
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -372,7 +402,7 @@ export default function ProfitCalculator() {
             onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}
           >
             <summary className="flex cursor-pointer items-center justify-between text-sm font-bold text-gray-400 uppercase tracking-wider hover:text-gray-200">
-              Optional modifiers / 高级设置
+              Optional modifiers
               <span className="text-xs text-theme-hazard">
                 {advancedOpen ? "Hide" : "Show"}
               </span>
@@ -380,7 +410,7 @@ export default function ProfitCalculator() {
             <div className="mt-4 space-y-4 text-sm">
               <label className="block">
                 <span className="mb-2 block text-xs font-bold text-gray-500 uppercase">
-                  Time left before vote / 剩余时间
+                  Time left before vote
                 </span>
                 <div className="space-y-2">
                   {timeOptions.map(({ label, value }) => {
@@ -396,8 +426,8 @@ export default function ProfitCalculator() {
                           }))
                         }
                         className={`w-full border px-3 py-2 text-left text-sm transition font-mono ${active
-                            ? "border-theme-hazard bg-theme-hazard/10 text-theme-hazard"
-                            : "border-theme-surface bg-theme-dark text-gray-500 hover:border-gray-600"
+                          ? "border-theme-hazard bg-theme-hazard/10 text-theme-hazard"
+                          : "border-theme-surface bg-theme-dark text-gray-500 hover:border-gray-600"
                           }`}
                       >
                         {label}
@@ -409,7 +439,7 @@ export default function ProfitCalculator() {
 
               <label className="block">
                 <span className="mb-2 block text-xs font-bold text-gray-500 uppercase">
-                  Risk appetite / 风险偏好
+                  Risk appetite
                 </span>
                 <div className="grid gap-2 sm:grid-cols-3">
                   {preferences.map(({ label, value }) => {
@@ -425,8 +455,8 @@ export default function ProfitCalculator() {
                           }))
                         }
                         className={`border px-3 py-2 text-sm font-bold transition uppercase ${active
-                            ? "border-green-500 bg-green-500/10 text-green-500"
-                            : "border-theme-surface bg-theme-dark text-gray-500 hover:border-gray-600"
+                          ? "border-green-500 bg-green-500/10 text-green-500"
+                          : "border-theme-surface bg-theme-dark text-gray-500 hover:border-gray-600"
                           }`}
                       >
                         {label}
@@ -441,7 +471,7 @@ export default function ProfitCalculator() {
           <button
             type="submit"
             disabled={!isReady}
-            className="mt-6 w-full bg-theme-blood py-4 text-xl font-creepster tracking-widest text-black transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-600 shadow-[0_0_15px_rgba(211,47,47,0.4)] hover:shadow-[0_0_25px_rgba(211,47,47,0.6)]"
+            className="mt-6 w-full bg-theme-blood py-4 text-xl font-creepster tracking-widest text-black transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-600 shadow-[0_0_15px_rgba(211,47,47,0.4)] hover:shadow-[0_0_25px_rgba(211,47,47,0.6)] hover:animate-glitch hover:text-shadow-glitch"
           >
             Calculate Decision
           </button>
@@ -464,7 +494,7 @@ export default function ProfitCalculator() {
                 <p className="text-sm uppercase tracking-widest font-bold opacity-80 border-b border-current pb-2 mb-4">
                   Verdict
                 </p>
-                <h2 className="text-4xl font-creepster tracking-wider mb-2">{result.decisionTitle}</h2>
+                <h2 className="text-4xl font-creepster tracking-wider mb-2 animate-text-reveal overflow-hidden whitespace-nowrap">{result.decisionTitle}</h2>
                 <p className="text-sm font-mono opacity-90">{result.reasoning}</p>
 
                 <dl className="mt-8 grid gap-4 text-sm sm:grid-cols-2">

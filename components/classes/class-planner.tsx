@@ -6,10 +6,10 @@ import type { ClassInfo } from "@/data/classes";
 import { classInfos } from "@/data/classes";
 
 const playstyles = [
-  { id: "steady", label: "Steady income / 稳健打钱" },
-  { id: "combat", label: "Fight heavy / 喜欢战斗" },
-  { id: "runner", label: "Speedrunner / 喜欢跑路" },
-  { id: "support", label: "Support / 喜欢辅助" },
+  { id: "steady", label: "Steady income" },
+  { id: "combat", label: "Fight heavy" },
+  { id: "runner", label: "Speedrunner" },
+  { id: "support", label: "Support-minded" },
 ] as const;
 
 type Playstyle = (typeof playstyles)[number]["id"];
@@ -34,7 +34,7 @@ export default function ClassPlanner() {
       <form className="grid gap-4 border border-theme-surface bg-theme-dark/60 p-5 text-sm text-gray-400">
         <label className="flex flex-col gap-2">
           <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-            Current gold / 当前金币
+            Current gold
           </span>
           <input
             type="number"
@@ -50,7 +50,7 @@ export default function ClassPlanner() {
 
         <fieldset className="space-y-2">
           <legend className="text-xs font-bold uppercase tracking-wider text-gray-500">
-            Preferred style / 偏好的玩法
+            Preferred style
           </legend>
           <div className="grid gap-2 sm:grid-cols-2">
             {playstyles.map((option) => {

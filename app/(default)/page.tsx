@@ -35,7 +35,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-6 sm:px-8 lg:px-12 relative z-10">
           <div className="flex flex-col gap-16 lg:flex-row">
             {/* Loot Radar */}
-            <div className="flex-1 rounded-sm border-2 border-theme-surface bg-theme-surface/30 p-10 shadow-lg backdrop-blur-sm">
+            <div className="flex-1 rounded-sm border-2 border-theme-surface bg-theme-surface/30 p-10 shadow-lg backdrop-blur-sm hover:scale-105 transition-transform duration-300">
               <p className="text-base uppercase tracking-widest text-theme-hazard font-bold mb-4">Loot radar</p>
               <h2 className="text-5xl font-creepster tracking-wider text-gray-200 mb-4">
                 Top value-per-slot pickups
@@ -68,7 +68,7 @@ export default function Home() {
             </div>
 
             {/* Threat Board */}
-            <div className="flex-1 rounded-sm border-2 border-theme-blood/30 bg-theme-blood/5 p-10 shadow-lg backdrop-blur-sm relative overflow-hidden">
+            <div className="flex-1 rounded-sm border-2 border-theme-blood/30 bg-theme-blood/5 p-10 shadow-lg backdrop-blur-sm relative overflow-hidden hover:scale-105 transition-transform duration-300">
               {/* Hazard stripes on top */}
               <div className="absolute top-0 left-0 right-0 h-2 bg-[repeating-linear-gradient(45deg,var(--color-theme-blood),var(--color-theme-blood)_10px,transparent_10px,transparent_20px)] opacity-50"></div>
 

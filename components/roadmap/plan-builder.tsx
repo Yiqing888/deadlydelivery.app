@@ -6,9 +6,9 @@ import type { RunPlan, RunStyle } from "@/lib/roadmap";
 import { generateRunPlan } from "@/lib/roadmap";
 
 const styles: Array<{ id: RunStyle; label: string }> = [
-  { id: "safe", label: "Safe / 保守" },
-  { id: "balanced", label: "Balanced / 中性" },
-  { id: "greedy", label: "Greedy / 贪一点" },
+  { id: "safe", label: "Safe" },
+  { id: "balanced", label: "Balanced" },
+  { id: "greedy", label: "Greedy" },
 ];
 
 export default function PlanBuilder() {
@@ -22,7 +22,7 @@ export default function PlanBuilder() {
       <form className="grid gap-4 border border-theme-surface bg-theme-dark/60 p-5 text-sm text-gray-400">
         <fieldset className="space-y-2">
           <legend className="text-xs font-bold uppercase tracking-wider text-gray-500">
-            Playstyle / 风格
+            Playstyle
           </legend>
           <div className="grid gap-2 sm:grid-cols-3">
             {styles.map((option) => {
@@ -52,7 +52,7 @@ export default function PlanBuilder() {
             onChange={(event) => setHasSquad(event.target.checked)}
             className="h-4 w-4 rounded border-theme-surface bg-theme-dark text-theme-hazard focus:ring-theme-hazard"
           />
-          Stable squad available / 有固定队友
+          Stable squad available
         </label>
       </form>
 

@@ -35,17 +35,31 @@ export interface CalculationResult {
   dangerLabel: string;
 }
 
-const floorRiskBase: Record<number, number> = {
-  1: 0.1,
-  2: 0.2,
-  3: 0.3,
-  4: 0.4,
-  5: 0.5,
-  6: 0.6,
-  7: 0.7,
-  8: 0.78,
-  9: 0.85,
-  10: 0.9,
+// Central knobs for quick tuning without rewriting logic.
+export const RISK_CONFIG = {
+  floorRiskBase: {
+    1: 0.1,
+    2: 0.2,
+    3: 0.3,
+    4: 0.4,
+    5: 0.5,
+    6: 0.6,
+    7: 0.7,
+    8: 0.78,
+    9: 0.85,
+    10: 0.9,
+  } as Record<number, number>,
+  defaultFloorRisk: 0.97,
+  riskClamp: { min: 0.05, max: 0.99 },
+  // Rough base gain per floor; tweak slope or base to shift overall EV tone.
+  gain: {
+    base: 250,
+    perFloor: 125,
+    classBonus: {
+      Porter: 0.15,
+      Sprinter: 0.1,
+    } as Partial<Record<PlayerClass, number>>,
+  },
 };
 
 const clamp = (value: number, min: number, max: number) =>
@@ -105,13 +119,17 @@ export function calcDeathProb(input: CalculatorInput): number {
   let survivalProduct = 1;
 
   for (const floor of floors) {
-    const base = floorRiskBase[floor] ?? 0.97;
-    const stepProb = clamp(base + modifier, 0.05, 0.99);
+    const base = RISK_CONFIG.floorRiskBase[floor] ?? RISK_CONFIG.defaultFloorRisk;
+    const stepProb = clamp(
+      base + modifier,
+      RISK_CONFIG.riskClamp.min,
+      RISK_CONFIG.riskClamp.max,
+    );
     survivalProduct *= 1 - stepProb;
   }
 
   const combinedDeath = 1 - survivalProduct;
-  return clamp(combinedDeath, 0.05, 0.99);
+  return clamp(combinedDeath, RISK_CONFIG.riskClamp.min, RISK_CONFIG.riskClamp.max);
 }
 
 export function estimateGain(
@@ -123,11 +141,11 @@ export function estimateGain(
   let total = 0;
 
   floors.forEach((floor) => {
-    total += 250 + floor * 125;
+    total += RISK_CONFIG.gain.base + floor * RISK_CONFIG.gain.perFloor;
   });
 
-  if (playerClass === "Porter") total *= 1.15;
-  if (playerClass === "Sprinter") total *= 1.1;
+  const bonus = RISK_CONFIG.gain.classBonus[playerClass];
+  if (bonus) total *= 1 + bonus;
   return Math.round(total);
 }
 
@@ -216,14 +234,14 @@ export function runCalculation(input: CalculatorInput): CalculationResult {
     "EV gain is roughly equal to staying. Talk to your squad before locking in.";
 
   if (decision === "EVACUATE") {
-    decisionTitle = "Evacuate / 撤离";
+    decisionTitle = "Evacuate";
     tone = "danger";
     reasoning =
       diffRatio <= -0.2
         ? "EV drops hard if you go deeper. Bank the loot before it disappears."
         : "Marginal upside but real wipe risk. Cash out and reset the run.";
   } else if (decision === "DEEPER") {
-    decisionTitle = "Go deeper / 再下一层";
+    decisionTitle = "Go deeper";
     tone = "success";
     reasoning =
       diffRatio >= 0.2

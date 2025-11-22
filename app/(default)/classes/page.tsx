@@ -1,11 +1,14 @@
 import ClassCard from "@/components/classes/class-card";
 import ClassPlanner from "@/components/classes/class-planner";
 import { classInfos } from "@/data/classes";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = buildMetadata({
   title: "Deadly Delivery Class Planner",
   description: "Compare classes and get a suggested unlock route based on your gold and playstyle.",
-};
+  canonical: "/classes",
+  keywords: ["Deadly Delivery classes", "Deadly Delivery class order"],
+});
 
 export default function ClassesPage() {
   return (

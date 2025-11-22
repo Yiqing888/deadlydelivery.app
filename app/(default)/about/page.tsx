@@ -1,7 +1,11 @@
-export const metadata = {
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
   title: "About Deadly Delivery Run Planner",
   description: "Project goals, data sources, and contact info for the Run Planner toolkit.",
-};
+  canonical: "/about",
+  keywords: ["Deadly Delivery about", "Deadly Delivery data sources"],
+});
 
 const sections = [
   {

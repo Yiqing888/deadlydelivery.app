@@ -1,9 +1,12 @@
 import PlanBuilder from "@/components/roadmap/plan-builder";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = buildMetadata({
   title: "Deadly Delivery 10-Run Roadmap",
   description: "Generate a 10-run plan with floor targets and reminders for your preferred playstyle.",
-};
+  canonical: "/roadmap",
+  keywords: ["Deadly Delivery roadmap", "Deadly Delivery run plan"],
+});
 
 export default function RoadmapPage() {
   return (
