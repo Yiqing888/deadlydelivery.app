@@ -116,7 +116,7 @@ export const items: Item[] = [
     slots: 1,
     category: "Other",
     floors: [2, 3],
-    notes: "Map intel speeds up clears—consider keeping until the next vote.",
+    notes: "Map intel speeds up clears--consider keeping until the next vote.",
   },
   {
     id: "surgical-kit",

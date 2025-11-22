@@ -1,7 +1,11 @@
-export const metadata = {
-  title: "Sign Up - Simple",
-  description: "Page description",
-};
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Create Account",
+  description: "Create a Deadly Delivery Run Planner account to save backpack templates, class priorities, and profit targets.",
+  canonical: "/signup",
+  keywords: ["Deadly Delivery sign up", "Deadly Delivery planner account"],
+});
 
 export default function SignUp() {
   return (

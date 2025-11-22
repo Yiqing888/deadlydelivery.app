@@ -2,26 +2,67 @@ import type { Metadata } from "next";
 
 import "./css/style.css";
 
-import { Inter } from "next/font/google";
+import { Courier_Prime, Creepster } from "next/font/google";
 
-const inter = Inter({
+import { absoluteUrl, siteMetadata } from "@/lib/seo";
+
+const courier = Courier_Prime({
+  weight: ["400", "700"],
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-courier",
+  display: "swap",
+});
+
+const creepster = Creepster({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-creepster",
   display: "swap",
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteMetadata.siteUrl),
   title: {
-    default: "Deadly Delivery Run Planner",
-    template: "%s | Deadly Delivery Run Planner",
+    default: siteMetadata.name,
+    template: `%s | ${siteMetadata.name}`,
   },
-  description:
-    "Community-built profit calculator, loot table, and monster reference for Deadly Delivery players.",
+  description: siteMetadata.description,
+  keywords: siteMetadata.keywords,
+  applicationName: siteMetadata.shortName,
+  authors: [{ name: siteMetadata.author }],
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
   openGraph: {
-    title: "Deadly Delivery Run Planner",
-    description:
-      "Run-by-run helper with EV calculator plus quick links to loot prices and monster counters.",
+    title: siteMetadata.name,
+    description: siteMetadata.description,
+    url: siteMetadata.siteUrl,
+    siteName: siteMetadata.name,
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: absoluteUrl(siteMetadata.socialImage),
+        alt: siteMetadata.socialAlt,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteMetadata.name,
+    description: siteMetadata.description,
+    images: [absoluteUrl(siteMetadata.socialImage)],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      maxSnippet: -1,
+      maxImagePreview: "large",
+      maxVideoPreview: -1,
+    },
   },
 };
 
@@ -33,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} bg-gray-50 font-inter tracking-tight text-gray-900 antialiased`}
+        className={`${courier.variable} ${creepster.variable} bg-theme-dark font-courier tracking-tight text-gray-200 antialiased`}
       >
         <div className="flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
           {children}

@@ -1,9 +1,13 @@
-export const metadata = {
-  title: "Sign In - Simple",
-  description: "Page description",
-};
-
 import Link from "next/link";
+
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Sign In",
+  description: "Sign in to Deadly Delivery Run Planner to sync saved runs, loot presets, and monster notes across devices.",
+  canonical: "/signin",
+  keywords: ["Deadly Delivery login", "Deadly Delivery account"],
+});
 
 export default function SignIn() {
   return (

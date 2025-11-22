@@ -1,7 +1,11 @@
-export const metadata = {
-  title: "Reset Password - Simple",
-  description: "Page description",
-};
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Reset Password",
+  description: "Reset your Deadly Delivery Run Planner password and regain access to calculators, loot data, and saved presets.",
+  canonical: "/reset-password",
+  keywords: ["Deadly Delivery password reset"],
+});
 
 export default function ResetPassword() {
   return (

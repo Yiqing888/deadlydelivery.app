@@ -66,19 +66,19 @@ export default function ItemsTable({ data }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-4 rounded-sm border-2 border-theme-surface bg-theme-surface/30 p-6 shadow-lg backdrop-blur-sm lg:flex-row lg:items-end lg:justify-between">
         <label className="flex-1 text-sm">
-          <span className="mb-1 block font-semibold text-gray-800">Search loot</span>
+          <span className="mb-2 block font-bold text-gray-400 uppercase tracking-wider">Search loot</span>
           <input
             type="text"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Old Wine, Soul Jam, ..."
-            className="w-full rounded-2xl border-gray-200 text-base"
+            className="w-full bg-theme-dark border-theme-surface text-gray-200 focus:border-theme-hazard focus:ring-0 rounded-sm placeholder-gray-700 font-mono"
           />
         </label>
         <label className="text-sm">
-          <span className="mb-1 block font-semibold text-gray-800">Category</span>
+          <span className="mb-2 block font-bold text-gray-400 uppercase tracking-wider">Category</span>
           <div className="flex flex-wrap gap-2">
             {categoryFilters.map((filter) => {
               const active = filter === category;
@@ -87,11 +87,10 @@ export default function ItemsTable({ data }: Props) {
                   type="button"
                   key={filter}
                   onClick={() => setCategory(filter)}
-                  className={`rounded-2xl border px-3 py-2 text-xs font-semibold transition ${
-                    active
-                      ? "border-blue-500 bg-blue-50 text-blue-900"
-                      : "border-gray-200 text-gray-600 hover:border-blue-200"
-                  }`}
+                  className={`border px-3 py-2 text-xs font-bold transition uppercase ${active
+                      ? "border-theme-hazard bg-theme-hazard/20 text-theme-hazard"
+                      : "border-theme-surface bg-theme-dark text-gray-500 hover:border-gray-500"
+                    }`}
                 >
                   {filter}
                 </button>
@@ -101,9 +100,9 @@ export default function ItemsTable({ data }: Props) {
         </label>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
-        <table className="min-w-full divide-y divide-gray-100 text-sm">
-          <thead className="bg-gray-50">
+      <div className="overflow-hidden rounded-sm border-2 border-theme-surface bg-theme-dark shadow-lg">
+        <table className="min-w-full divide-y divide-theme-surface text-sm">
+          <thead className="bg-theme-surface/50">
             <tr>
               <SortableHeader
                 label="Item"
@@ -129,30 +128,30 @@ export default function ItemsTable({ data }: Props) {
                 direction={sortDir}
                 onClick={() => toggleSort("density")}
               />
-              <th className="px-3 py-3 text-left font-semibold text-gray-600">Notes</th>
+              <th className="px-3 py-3 text-left font-bold text-gray-500 uppercase tracking-wide">Notes</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-theme-surface">
             {processed.map((item) => (
-              <tr key={item.id} className="text-gray-900">
+              <tr key={item.id} className="text-gray-300 hover:bg-theme-surface/20 transition-colors">
                 <td className="px-3 py-3">
-                  <p className="font-semibold">{item.name}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="font-bold text-gray-200">{item.name}</p>
+                  <p className="text-xs text-gray-600 font-mono">
                     {item.category} · Floors {item.floors?.join(", ") ?? "?"}
                   </p>
                 </td>
-                <td className="px-3 py-3 font-mono text-base">{item.value.toLocaleString()}</td>
-                <td className="px-3 py-3">{item.slots}</td>
-                <td className="px-3 py-3 font-mono text-base">
+                <td className="px-3 py-3 font-mono text-base text-theme-hazard">{item.value.toLocaleString()}</td>
+                <td className="px-3 py-3 font-mono">{item.slots}</td>
+                <td className="px-3 py-3 font-mono text-base font-bold">
                   {Math.round((item.density ?? 0) * 10) / 10}
                 </td>
-                <td className="px-3 py-3 text-xs text-gray-600">{item.notes}</td>
+                <td className="px-3 py-3 text-xs text-gray-500 font-mono">{item.notes}</td>
               </tr>
             ))}
           </tbody>
         </table>
         {processed.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-gray-500">
+          <p className="px-4 py-8 text-center text-sm text-gray-500 font-mono">
             No items match that filter. Try clearing search or switching category.
           </p>
         )}
@@ -175,13 +174,13 @@ function SortableHeader({
   return (
     <th
       scope="col"
-      className="cursor-pointer px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+      className="cursor-pointer px-3 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500 hover:text-gray-300 transition-colors"
       onClick={onClick}
     >
       <span className="inline-flex items-center gap-1">
         {label}
         {active && (
-          <span aria-hidden className="text-[10px]">
+          <span aria-hidden className="text-[10px] text-theme-hazard">
             {direction === "asc" ? "▲" : "▼"}
           </span>
         )}

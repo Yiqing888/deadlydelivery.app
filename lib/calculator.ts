@@ -89,26 +89,46 @@ function riskPrefModifier(pref: RiskPreference): number {
   return 0;
 }
 
+function getFloorsToSimulate(currentFloor: number, targetFloor: number): number[] {
+  const steps = Math.max(1, targetFloor - currentFloor);
+  return Array.from({ length: steps }, (_, index) => currentFloor + index);
+}
+
 export function calcDeathProb(input: CalculatorInput): number {
-  const base = floorRiskBase[input.currentFloor] ?? 0.97;
-  const p =
-    base +
+  const floors = getFloorsToSimulate(input.currentFloor, input.targetFloor);
+  const modifier =
     teamModifier(input.alivePlayers) +
     classModifier(input.playerClass) +
     timeModifier(input.timeLeftTier) +
     riskPrefModifier(input.riskPreference);
 
-  return clamp(p, 0.05, 0.99);
+  let survivalProduct = 1;
+
+  for (const floor of floors) {
+    const base = floorRiskBase[floor] ?? 0.97;
+    const stepProb = clamp(base + modifier, 0.05, 0.99);
+    survivalProduct *= 1 - stepProb;
+  }
+
+  const combinedDeath = 1 - survivalProduct;
+  return clamp(combinedDeath, 0.05, 0.99);
 }
 
 export function estimateGain(
   currentFloor: number,
+  targetFloor: number,
   playerClass: PlayerClass,
 ): number {
-  let base = 250 + currentFloor * 125;
-  if (playerClass === "Porter") base *= 1.15;
-  if (playerClass === "Sprinter") base *= 1.1;
-  return Math.round(base);
+  const floors = getFloorsToSimulate(currentFloor, targetFloor);
+  let total = 0;
+
+  floors.forEach((floor) => {
+    total += 250 + floor * 125;
+  });
+
+  if (playerClass === "Porter") total *= 1.15;
+  if (playerClass === "Sprinter") total *= 1.1;
+  return Math.round(total);
 }
 
 function getDangerLabel(prob: number): string {
@@ -138,13 +158,14 @@ function buildNotes(
 ): string[] {
   const notes: string[] = [];
   const baseGain = 200 + input.currentFloor * 150;
+  const plannedFloors = Math.max(1, input.targetFloor - input.currentFloor);
 
   if (input.inventoryValue >= baseGain * 3) {
     notes.push(
       "You've already banked well above a normal run for this floor. Greed will sting if you wipe.",
     );
   } else if (input.inventoryValue >= baseGain * 2) {
-    notes.push("This floor is already profitable—no shame in cashing out.");
+    notes.push("This floor is already profitable--no shame in cashing out.");
   }
 
   if (result.deathProb >= 0.6) {
@@ -155,7 +176,7 @@ function buildNotes(
 
   if (input.currentFloor >= 7) {
     notes.push(
-      "Deep floors spawn nastier entities like Fire Turkey and Pit Maw more often—prep stims before moving on.",
+      "Deep floors spawn nastier entities like Fire Turkey and Pit Maw more often--prep stims before moving on.",
     );
   }
 
@@ -165,13 +186,23 @@ function buildNotes(
     );
   }
 
+  if (plannedFloors >= 2) {
+    notes.push(
+      `Planning ${plannedFloors} floors in one go multiplies wipe risk--double-check squad resources before locking in.`,
+    );
+  }
+
   return notes;
 }
 
 export function runCalculation(input: CalculatorInput): CalculationResult {
   const deathProb = calcDeathProb(input);
   const survivalRate = Number((1 - deathProb).toFixed(2));
-  const estimatedGain = estimateGain(input.currentFloor, input.playerClass);
+  const estimatedGain = estimateGain(
+    input.currentFloor,
+    input.targetFloor,
+    input.playerClass,
+  );
   const evStay = input.inventoryValue;
   const evGo = (input.inventoryValue + estimatedGain) * survivalRate;
   const diff = evGo - evStay;

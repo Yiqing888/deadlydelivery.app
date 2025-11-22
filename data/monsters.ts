@@ -58,7 +58,7 @@ export const monsters: Monster[] = [
     descriptionShort: "Edible mobs that flee but explode if cornered.",
     attackPattern: "Runs until cornered, then self-destructs for AoE damage.",
     counterStrategy:
-      "Shoot from range or leave them alone—value is low anyway.",
+      "Shoot from range or leave them alone--value is low anyway.",
   },
   {
     id: "puppet",
